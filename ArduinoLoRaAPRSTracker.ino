@@ -212,7 +212,7 @@ const char *createcompressedaprscoords(float lat, float lon, float alt, char sym
     buf[10]=(ialt_cs%(91*91))/(91)+33;
     buf[11]=ialt_cs%(91)+33;
 
-    buf[12]=89;
+    buf[12]=81;
   }
 
   return buf;
