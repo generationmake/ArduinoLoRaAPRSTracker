@@ -16,7 +16,8 @@
  **************************************************************************************/
 
 static char const CALLSIGN[]="xxxxxx";
-static char const SYMBOLCODE='[';     // [ = Jogger
+static char const SYMBOLCODE='>';     // [ = Jogger; b = Bicycle; < = Motorcycle; > = Car; k = Truck
+static char const SSID='4';     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
 
 /**************************************************************************************
  * FUNCTION DECLARATION
@@ -221,7 +222,8 @@ void sendposition(float lat, float lon, float alt) {
     LoRa.write(0x01);
   // APRS Data:
     LoRa.print(CALLSIGN); // callsign
-    LoRa.print("-4");  // SSID specified icon = 4 = bicycle
+    LoRa.print("-");  // SSID delimiter
+    LoRa.print(SSID);  // SSID specified icon
     LoRa.print(">APZ666,WIDE1-1:!");  // software version APZ666 = experimental, APRS data type identifier = ! = Position without timestamp
     LoRa.print(createaprscoords(lat, lon)); // from gps data, using primary symbol table
     LoRa.write(SYMBOLCODE); // symbol code
