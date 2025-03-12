@@ -188,6 +188,29 @@ const char *createaprscoords(float lat, float lon) {
   
   return buf;
 }
+const char *createcompressedaprscoords(float lat, float lon, float alt, char symbolcode) {
+  static char buf[19]="/YYYYXXXX$ sT";
+
+  int ilat=380926*(90-lat);
+  buf[1]=ilat/(91*91*91)+33;
+  buf[2]=(ilat%(91*91*91))/(91*91)+33;
+  buf[3]=(ilat%(91*91))/(91)+33;
+  buf[4]=ilat%(91)+33;
+  int ilon=190463*(180+lon);
+  buf[5]=ilon/(91*91*91)+33;
+  buf[6]=(ilon%(91*91*91))/(91*91)+33;
+  buf[7]=(ilon%(91*91))/(91)+33;
+  buf[8]=ilon%(91)+33;
+
+  buf[9]=symbolcode;
+
+  float alt_feet=alt*3.281;
+
+
+//  buf[12]=89;
+
+  return buf;
+}
 const char *createaprsalt(float alt) {
   static char buf[10]="/A=000000";
 
@@ -206,6 +229,7 @@ void sendposition(float lat, float lon, float alt) {
   static unsigned long prev_tx = 0;
   unsigned long const now = millis();
   /* tx data every 2 minutes = 120000 ms */
+  Serial.println(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
   if((now - prev_tx) > 120000)
   {
     prev_tx=now;
@@ -225,9 +249,14 @@ void sendposition(float lat, float lon, float alt) {
     LoRa.print("-");  // SSID delimiter
     LoRa.print(SSID);  // SSID specified icon
     LoRa.print(">APZ666,WIDE1-1:!");  // software version APZ666 = experimental, APRS data type identifier = ! = Position without timestamp
-    LoRa.print(createaprscoords(lat, lon)); // from gps data, using primary symbol table
-    LoRa.write(SYMBOLCODE); // symbol code
-    if(alt!=NULL) LoRa.print(createaprsalt(alt)); // altitude only when available
+// clear text
+//    LoRa.print(createaprscoords(lat, lon)); // from gps data, using primary symbol table
+//    LoRa.write(SYMBOLCODE); // symbol code
+//    if(alt!=NULL) LoRa.print(createaprsalt(alt)); // altitude only when available
+
+//compressed
+    LoRa.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE)); // from gps data, using primary symbol table
+
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
 //  LoRa.write((const uint8_t *)data.c_str(), data.length());
     LoRa.endPacket();
