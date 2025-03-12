@@ -204,10 +204,16 @@ const char *createcompressedaprscoords(float lat, float lon, float alt, char sym
 
   buf[9]=symbolcode;
 
-  float alt_feet=alt*3.281;
+  if(alt!=NULL)
+  {
+    float alt_feet=alt*3.281;
 
+    int ialt_cs=log(alt_feet)/log(1.002);
+    buf[10]=(ialt_cs%(91*91))/(91)+33;
+    buf[11]=ialt_cs%(91)+33;
 
-//  buf[12]=89;
+    buf[12]=89;
+  }
 
   return buf;
 }
@@ -229,7 +235,8 @@ void sendposition(float lat, float lon, float alt) {
   static unsigned long prev_tx = 0;
   unsigned long const now = millis();
   /* tx data every 2 minutes = 120000 ms */
-  Serial.println(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
+  Serial.println();
+  Serial.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
   if((now - prev_tx) > 120000)
   {
     prev_tx=now;
