@@ -4,12 +4,12 @@ on:
   pull_request:
     paths:
       - ".github/workflows/compile-fw.yml"
-      - "esp-sensor-node.ino"
+      - "ArduinoLoRaAPRSTracker.ino"
 
   push:
     paths:
       - ".github/workflows/compile-fw.yml"
-      - "esp-sensor-node.ino"
+      - "ArduinoLoRaAPRSTracker.ino"
 
 jobs:
   build:
@@ -23,10 +23,9 @@ jobs:
 
       matrix:
         board:
-          - fqbn: esp8266:esp8266:generic
+          - fqbn: arduino:samd:mkrwan1300
             platforms: |
-              - name: esp8266:esp8266
-                source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+              - name: arduino:samd
 
 
     steps:
@@ -42,14 +41,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           libraries: |
             - source-path: ./
-            - source-url: https://github.com/PaulStoffregen/OneWire.git
-            - source-url: https://github.com/milesburton/Arduino-Temperature-Control-Library.git
-            - source-url: https://github.com/adafruit/Adafruit_BusIO.git
-            - source-url: https://github.com/adafruit/Adafruit_Sensor.git
-            - source-url: https://github.com/adafruit/Adafruit_BME680.git
-            - source-url: https://github.com/adafruit/Adafruit_HTS221.git
-            - source-url: https://github.com/adafruit/Adafruit_LPS2X.git
-            - source-url: https://github.com/107-systems/107-Arduino-TSL2550.git
+            - source-url: https://github.com/sandeepmistry/arduino-LoRa.git
+            - source-url: https://github.com/107-systems/107-Arduino-NMEA-Parser.git
 
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
           sketch-paths: ./
