@@ -14,7 +14,7 @@ As soon as a valid position is received by the GNSS receiver it send the positio
   * [Arduino MKR WAN 1300](https://docs.arduino.cc/hardware/mkr-wan-1300/) or [Arduino MKR WAN 1310](https://docs.arduino.cc/hardware/mkr-wan-1310/)
   * GNSS receiver with serial port
   * suitable antenna
-  
+
 ## connections
 
 You only have to connect an antenna and the serial output of your GNSS receiver to the serial input of the Arduino board (Pin D13 - RX). Maybe also supply your GNSS receiver with power.

@@ -173,7 +173,7 @@ const char *createaprscoords(float lat, float lon) {
   buf[3]=(int)(latfract)%10+48;
   buf[5]=(int)(latfract*10)%10+48;
   buf[6]=(int)(latfract*100)%10+48;
-  
+
   if(lon<0) buf[17]='W';
   else buf[17]='E';
   buf[9]=(int)(lon/100)%10+48;
@@ -185,7 +185,7 @@ const char *createaprscoords(float lat, float lon) {
   buf[13]=(int)(lonfract)%10+48;
   buf[15]=(int)(lonfract*10)%10+48;
   buf[16]=(int)(lonfract*100)%10+48;
-  
+
   return buf;
 }
 const char *createcompressedaprscoords(float lat, float lon, float alt, char symbolcode) {
@@ -227,7 +227,7 @@ const char *createaprsalt(float alt) {
   buf[6]=(int)(alt_feet/100)%10+48;
   buf[7]=(int)(alt_feet/10)%10+48;
   buf[8]=(int)(alt_feet)%10+48;
-  
+
   return buf;
 }
 
