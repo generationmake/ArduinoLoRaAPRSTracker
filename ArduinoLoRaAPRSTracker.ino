@@ -70,43 +70,43 @@ void loop()
  **************************************************************************************/
 void onGgaUpdate(nmea::GgaData const gga)
 {
-  Serial.print("GGA ");
+//  Serial.print("GGA ");
 
-  if      (gga.source == nmea::GgaSource::GPS)     Serial.print("GPS");
-  else if (gga.source == nmea::GgaSource::GLONASS) Serial.print("GLONASS");
-  else if (gga.source == nmea::GgaSource::Galileo) Serial.print("Galileo");
-  else if (gga.source == nmea::GgaSource::GNSS)    Serial.print("GNSS");
-  else if (gga.source == nmea::GgaSource::BDS)     Serial.print("BDS");
+//  if      (gga.source == nmea::GgaSource::GPS)     Serial.print("GPS");
+//  else if (gga.source == nmea::GgaSource::GLONASS) Serial.print("GLONASS");
+//  else if (gga.source == nmea::GgaSource::Galileo) Serial.print("Galileo");
+//  else if (gga.source == nmea::GgaSource::GNSS)    Serial.print("GNSS");
+//  else if (gga.source == nmea::GgaSource::BDS)     Serial.print("BDS");
 
-  Serial.print(" ");
-  Serial.print(gga.time_utc.hour);
-  Serial.print(":");
-  Serial.print(gga.time_utc.minute);
-  Serial.print(":");
-  Serial.print(gga.time_utc.second);
-  Serial.print(".");
-  Serial.print(gga.time_utc.microsecond);
+//  Serial.print(" ");
+//  Serial.print(gga.time_utc.hour);
+//  Serial.print(":");
+//  Serial.print(gga.time_utc.minute);
+//  Serial.print(":");
+//  Serial.print(gga.time_utc.second);
+//  Serial.print(".");
+//  Serial.print(gga.time_utc.microsecond);
 
   if (gga.fix_quality != nmea::FixQuality::Invalid)
   {
-    Serial.print(" : LAT ");
-    Serial.print(gga.latitude);
-    Serial.print(" ° | LON ");
-    Serial.print(gga.longitude);
-    Serial.print(" ° | Num Sat. ");
-    Serial.print(gga.num_satellites);
-    Serial.print(" | HDOP =  ");
-    Serial.print(gga.hdop);
-    Serial.print(" m | Altitude ");
-    Serial.print(gga.altitude);
-    Serial.print(" m | Geoidal Separation ");
-    Serial.print(gga.geoidal_separation);
-    Serial.print(" m | APRS = ");
-    Serial.print(createaprscoords(gga.latitude,gga.longitude));
+//    Serial.print(" : LAT ");
+//    Serial.print(gga.latitude);
+//    Serial.print(" ° | LON ");
+//    Serial.print(gga.longitude);
+//    Serial.print(" ° | Num Sat. ");
+//    Serial.print(gga.num_satellites);
+//    Serial.print(" | HDOP =  ");
+//    Serial.print(gga.hdop);
+//    Serial.print(" m | Altitude ");
+//    Serial.print(gga.altitude);
+//    Serial.print(" m | Geoidal Separation ");
+//    Serial.print(gga.geoidal_separation);
+//    Serial.print(" m | APRS = ");
+//    Serial.print(createaprscoords(gga.latitude,gga.longitude));
     sendposition(gga.latitude,gga.longitude,gga.altitude);
   }
 
-  Serial.println();
+//  Serial.println();
 }
 
 const char *maidenhead(float lat, float lon)
@@ -197,8 +197,8 @@ void sendposition(float lat, float lon, float alt) {
   static unsigned long prev_tx = 0;
   unsigned long const now = millis();
   /* tx data every 2 minutes = 120000 ms */
-  Serial.println();
-  Serial.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
+//  Serial.println();
+//  Serial.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
   if((now - prev_tx) > 120000)
   {
     prev_tx=now;
