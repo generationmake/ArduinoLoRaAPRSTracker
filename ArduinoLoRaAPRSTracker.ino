@@ -17,13 +17,12 @@
 
 static char const CALLSIGN[]="xxxxxx";
 static char const SYMBOLCODE='>';     // [ = Jogger; b = Bicycle; < = Motorcycle; > = Car; k = Truck
-static char const SSID='4';     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
+static char const SSID[]="4";     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
 
 /**************************************************************************************
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-//void onRmcUpdate(nmea::RmcData const);
 void onGgaUpdate(nmea::GgaData const);
 void sendposition(float, float);
 const char *createaprscoords(float, float);
@@ -32,7 +31,6 @@ const char *createaprscoords(float, float);
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-//ArduinoNmeaParser parser(onRmcUpdate, onGgaUpdate);
 ArduinoNmeaParser parser(NULL, onGgaUpdate);
 int counter = 0;
 
@@ -68,83 +66,12 @@ void loop()
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
-/*
-void onRmcUpdate(nmea::RmcData const rmc)
-{
-  Serial.print("RMC ");
-
-  if      (rmc.source == nmea::RmcSource::GPS)     Serial.print("GPS");
-  else if (rmc.source == nmea::RmcSource::GLONASS) Serial.print("GLONASS");
-  else if (rmc.source == nmea::RmcSource::Galileo) Serial.print("Galileo");
-  else if (rmc.source == nmea::RmcSource::GNSS)    Serial.print("GNSS");
-  else if (rmc.source == nmea::RmcSource::BDS)     Serial.print("BDS");
-
-  Serial.print(" ");
-  Serial.print(rmc.time_utc.hour);
-  Serial.print(":");
-  Serial.print(rmc.time_utc.minute);
-  Serial.print(":");
-  Serial.print(rmc.time_utc.second);
-  Serial.print(".");
-  Serial.print(rmc.time_utc.microsecond);
-
-  if (rmc.is_valid)
-  {
-    Serial.print(" : LAT ");
-    Serial.print(rmc.latitude);
-    Serial.print(" ° | LON ");
-    Serial.print(rmc.longitude);
-    Serial.print(" ° | VEL ");
-    Serial.print(rmc.speed);
-    Serial.print(" m/s | HEADING ");
-    Serial.print(rmc.course);
-    Serial.print(" ° | APRS = ");
-    Serial.print(createaprscoords(rmc.latitude,rmc.longitude));
-    sendposition(rmc.latitude,rmc.longitude, NULL);
-  }
-
-  Serial.println();
-}*/
-
 void onGgaUpdate(nmea::GgaData const gga)
 {
-  Serial.print("GGA ");
-
-  if      (gga.source == nmea::GgaSource::GPS)     Serial.print("GPS");
-  else if (gga.source == nmea::GgaSource::GLONASS) Serial.print("GLONASS");
-  else if (gga.source == nmea::GgaSource::Galileo) Serial.print("Galileo");
-  else if (gga.source == nmea::GgaSource::GNSS)    Serial.print("GNSS");
-  else if (gga.source == nmea::GgaSource::BDS)     Serial.print("BDS");
-
-  Serial.print(" ");
-  Serial.print(gga.time_utc.hour);
-  Serial.print(":");
-  Serial.print(gga.time_utc.minute);
-  Serial.print(":");
-  Serial.print(gga.time_utc.second);
-  Serial.print(".");
-  Serial.print(gga.time_utc.microsecond);
-
   if (gga.fix_quality != nmea::FixQuality::Invalid)
   {
-    Serial.print(" : LAT ");
-    Serial.print(gga.latitude);
-    Serial.print(" ° | LON ");
-    Serial.print(gga.longitude);
-    Serial.print(" ° | Num Sat. ");
-    Serial.print(gga.num_satellites);
-    Serial.print(" | HDOP =  ");
-    Serial.print(gga.hdop);
-    Serial.print(" m | Altitude ");
-    Serial.print(gga.altitude);
-    Serial.print(" m | Geoidal Separation ");
-    Serial.print(gga.geoidal_separation);
-    Serial.print(" m | APRS = ");
-    Serial.print(createaprscoords(gga.latitude,gga.longitude));
     sendposition(gga.latitude,gga.longitude,gga.altitude);
   }
-
-  Serial.println();
 }
 
 const char *maidenhead(float lat, float lon)
@@ -235,8 +162,8 @@ void sendposition(float lat, float lon, float alt) {
   static unsigned long prev_tx = 0;
   unsigned long const now = millis();
   /* tx data every 2 minutes = 120000 ms */
-  Serial.println();
-  Serial.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
+//  Serial.println();
+//  Serial.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE));
   if((now - prev_tx) > 120000)
   {
     prev_tx=now;
@@ -265,7 +192,6 @@ void sendposition(float lat, float lon, float alt) {
     LoRa.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE)); // from gps data, using primary symbol table
 
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
-//  LoRa.write((const uint8_t *)data.c_str(), data.length());
     LoRa.endPacket();
 
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
