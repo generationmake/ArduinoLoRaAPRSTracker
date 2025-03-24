@@ -68,44 +68,6 @@ void loop()
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
-/*
-void onRmcUpdate(nmea::RmcData const rmc)
-{
-  Serial.print("RMC ");
-
-  if      (rmc.source == nmea::RmcSource::GPS)     Serial.print("GPS");
-  else if (rmc.source == nmea::RmcSource::GLONASS) Serial.print("GLONASS");
-  else if (rmc.source == nmea::RmcSource::Galileo) Serial.print("Galileo");
-  else if (rmc.source == nmea::RmcSource::GNSS)    Serial.print("GNSS");
-  else if (rmc.source == nmea::RmcSource::BDS)     Serial.print("BDS");
-
-  Serial.print(" ");
-  Serial.print(rmc.time_utc.hour);
-  Serial.print(":");
-  Serial.print(rmc.time_utc.minute);
-  Serial.print(":");
-  Serial.print(rmc.time_utc.second);
-  Serial.print(".");
-  Serial.print(rmc.time_utc.microsecond);
-
-  if (rmc.is_valid)
-  {
-    Serial.print(" : LAT ");
-    Serial.print(rmc.latitude);
-    Serial.print(" ° | LON ");
-    Serial.print(rmc.longitude);
-    Serial.print(" ° | VEL ");
-    Serial.print(rmc.speed);
-    Serial.print(" m/s | HEADING ");
-    Serial.print(rmc.course);
-    Serial.print(" ° | APRS = ");
-    Serial.print(createaprscoords(rmc.latitude,rmc.longitude));
-    sendposition(rmc.latitude,rmc.longitude, NULL);
-  }
-
-  Serial.println();
-}*/
-
 void onGgaUpdate(nmea::GgaData const gga)
 {
   Serial.print("GGA ");
