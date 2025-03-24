@@ -17,7 +17,7 @@
 
 static char const CALLSIGN[]="xxxxxx";
 static char const SYMBOLCODE='>';     // [ = Jogger; b = Bicycle; < = Motorcycle; > = Car; k = Truck
-static char const SSID='4';     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
+static char const SSID[]="4";     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
 
 /**************************************************************************************
  * FUNCTION DECLARATION
