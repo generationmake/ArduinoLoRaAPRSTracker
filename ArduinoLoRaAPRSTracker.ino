@@ -44,6 +44,7 @@ void setup() {
 //  while (!Serial);
 
   pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
   Serial.println("LoRa APRS Sender");
 
 // Configure LoRa module to transmit and receive at the LoRa APRS frequency
@@ -54,6 +55,7 @@ void setup() {
   LoRa.setSpreadingFactor(12);
   LoRa.setTxPower(20);
   LoRa.enableCrc();
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
 }
 
 void loop()
