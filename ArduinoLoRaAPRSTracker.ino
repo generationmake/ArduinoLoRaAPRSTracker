@@ -58,6 +58,7 @@ void setup() {
   LoRa.setSpreadingFactor(12);
   LoRa.setTxPower(20);
   LoRa.enableCrc();
+  LoRa.sleep(); // send LoRa Module to sleep mode
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
 }
 
@@ -198,6 +199,8 @@ void sendposition(float lat, float lon, float alt) {
 
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
     LoRa.endPacket();
+
+    LoRa.sleep(); // send LoRa Module to sleep mode
 
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
     count++;  // counter for comment
