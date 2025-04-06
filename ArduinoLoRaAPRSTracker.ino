@@ -39,12 +39,15 @@ int counter = 0;
  **************************************************************************************/
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
+
+  set_sys_clock_khz(48000, false);  // set pico clk to 48 MHz
+
   Serial.begin(9600);
   Serial1.begin(9600);
 //  while (!Serial);
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
   Serial.println("LoRa APRS Sender");
 
 // Configure LoRa module to transmit and receive at the LoRa APRS frequency
