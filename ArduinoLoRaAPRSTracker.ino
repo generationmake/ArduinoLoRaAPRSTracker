@@ -15,7 +15,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static char const CALLSIGN[]="xxxxxx";
+static char const CALLSIGN[]="DL1MAB";
 static char const SYMBOLCODE='>';     // [ = Jogger; b = Bicycle; < = Motorcycle; > = Car; k = Truck
 static char const SSID[]="4";     // 4 = Bicycle; 10 = Motorcycle; 9 = Car; 14 = Truck
 
@@ -74,8 +74,38 @@ void loop()
  **************************************************************************************/
 void onGgaUpdate(nmea::GgaData const gga)
 {
+  Serial.print("GGA ");
+
+  if      (gga.source == nmea::GgaSource::GPS)     Serial.print("GPS");
+  else if (gga.source == nmea::GgaSource::GLONASS) Serial.print("GLONASS");
+  else if (gga.source == nmea::GgaSource::Galileo) Serial.print("Galileo");
+  else if (gga.source == nmea::GgaSource::GNSS)    Serial.print("GNSS");
+  else if (gga.source == nmea::GgaSource::BDS)     Serial.print("BDS");
+
+  Serial.print(" ");
+  Serial.print(gga.time_utc.hour);
+  Serial.print(":");
+  Serial.print(gga.time_utc.minute);
+  Serial.print(":");
+  Serial.print(gga.time_utc.second);
+  Serial.print(".");
+  Serial.print(gga.time_utc.microsecond);
+
   if (gga.fix_quality != nmea::FixQuality::Invalid)
   {
+    Serial.print(" : LON ");
+    Serial.print(gga.longitude);
+    Serial.print(" ° | LAT ");
+    Serial.print(gga.latitude);
+    Serial.print(" ° | Num Sat. ");
+    Serial.print(gga.num_satellites);
+    Serial.print(" | HDOP =  ");
+    Serial.print(gga.hdop);
+    Serial.print(" m | Altitude ");
+    Serial.print(gga.altitude);
+    Serial.print(" m | Geoidal Separation ");
+    Serial.print(gga.geoidal_separation);
+    Serial.print(" m");
     sendposition(gga.latitude,gga.longitude,gga.altitude);
   }
 }
