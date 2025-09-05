@@ -39,11 +39,17 @@ int counter = 0;
  **************************************************************************************/
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
+
+#ifdef ARDUINO_ARCH_RP2040
+  set_sys_clock_khz(48000, false);  // set pico clk to 48 MHz only on RP2040
+#endif
+
   Serial.begin(9600);
   Serial1.begin(9600);
 //  while (!Serial);
 
-  pinMode(LED_BUILTIN, OUTPUT);
   Serial.println("LoRa APRS Sender");
 
 // Configure LoRa module to transmit and receive at the LoRa APRS frequency
@@ -54,6 +60,8 @@ void setup() {
   LoRa.setSpreadingFactor(12);
   LoRa.setTxPower(20);
   LoRa.enableCrc();
+  LoRa.sleep(); // send LoRa Module to sleep mode
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
 }
 
 void loop()
@@ -193,6 +201,8 @@ void sendposition(float lat, float lon, float alt) {
 
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
     LoRa.endPacket();
+
+    LoRa.sleep(); // send LoRa Module to sleep mode
 
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
     count++;  // counter for comment
