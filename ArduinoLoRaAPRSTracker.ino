@@ -42,7 +42,9 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on
 
-  set_sys_clock_khz(48000, false);  // set pico clk to 48 MHz
+#ifdef ARDUINO_ARCH_RP2040
+  set_sys_clock_khz(48000, false);  // set pico clk to 48 MHz only on RP2040
+#endif
 
   Serial.begin(9600);
   Serial1.begin(9600);
