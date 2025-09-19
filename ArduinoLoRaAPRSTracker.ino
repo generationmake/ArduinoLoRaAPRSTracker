@@ -201,6 +201,7 @@ void sendposition(float lat, float lon, float alt) {
 
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
 
+#ifdef ARDUINO_ARCH_RP2040
     if(count==5)
     {
       LoRa.print(" B=");
@@ -209,6 +210,7 @@ void sendposition(float lat, float lon, float alt) {
       LoRa.print(" T=");
       LoRa.print(analogReadTemp(3.0));
     }
+#endif
 
     LoRa.endPacket();
 
