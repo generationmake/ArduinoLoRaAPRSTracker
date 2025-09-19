@@ -200,6 +200,16 @@ void sendposition(float lat, float lon, float alt) {
     LoRa.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE)); // from gps data, using primary symbol table
 
     if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
+
+    if(count==5)
+    {
+      LoRa.print(" B=");
+      float bat_voltage=analogRead(A0)/1024*3.0*3.0;
+      LoRa.print(bat_voltage);
+      LoRa.print(" T=");
+      LoRa.print(analogReadTemp(3.0));
+    }
+
     LoRa.endPacket();
 
     LoRa.sleep(); // send LoRa Module to sleep mode
