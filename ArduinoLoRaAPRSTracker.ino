@@ -7,9 +7,27 @@
  **************************************************************************************/
 
 #include <SPI.h>
-#include <LoRa.h>
+//#include <LoRa.h>
 //#include <MKRWAN.h>
+#include "SX126x.h"
 #include <ArduinoNmeaParser.h>
+
+#define RF_FREQUENCY         433775000
+#define TX_OUTPUT_POWER      22
+#define LORA_BANDWIDTH       4
+#define LORA_SPREADING_FACTOR 9
+#define LORA_CODINGRATE      4
+#define LORA_PREAMBLE_LENGTH 8
+
+#define MOSI      19
+#define MISO      16
+#define SCK       17
+#define LORA_NSS  10
+#define LORA_RST  9
+#define LORA_BUSY 2
+#define LORA_DIO1 3
+
+SX126x LoRa(LORA_NSS, LORA_RST, LORA_BUSY, LORA_DIO1, SCK, MISO, MOSI);
 
 /**************************************************************************************
  * CONSTANTS
@@ -53,14 +71,35 @@ void setup() {
   Serial.println("LoRa APRS Sender");
 
 // Configure LoRa module to transmit and receive at the LoRa APRS frequency
-  if (!LoRa.begin(433775000)) {
-    Serial.println("Starting LoRa failed!");
+//  if (!LoRa.begin(433775000)) {
+//    Serial.println("Starting LoRa failed!");
+//    while (1);
+//  }
+//  LoRa.setSpreadingFactor(12);
+//  LoRa.setTxPower(20);
+//  LoRa.enableCrc();
+//  LoRa.sleep(); // send LoRa Module to sleep mode
+
+  int err = LoRa.begin(
+      SX126X_PACKET_TYPE_LORA,   // LoRa mode
+      RF_FREQUENCY,              // frequency in Hz
+      TX_OUTPUT_POWER,           // tx power in dBm
+      SX126X_DIO3_OUTPUT_1_8     // TCXO VDD voltage via Dio3
+  );
+  if (err != 0) {
+    Serial.print("LoRa.begin error: ");
+    Serial.println(err);
     while (1);
   }
-  LoRa.setSpreadingFactor(12);
-  LoRa.setTxPower(20);
-  LoRa.enableCrc();
-  LoRa.sleep(); // send LoRa Module to sleep mode
+  LoRa.LoRaConfig(
+      LORA_SPREADING_FACTOR,
+      LORA_BANDWIDTH,
+      LORA_CODINGRATE,
+      LORA_PREAMBLE_LENGTH,
+      true,   // CRC on
+      false   // invertIQ
+  );
+
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off
 }
 
@@ -180,41 +219,43 @@ void sendposition(float lat, float lon, float alt) {
     Serial.println("");
     Serial.println("Sending APRS packet: ");
 
+    char lorabuf[100]="";
 // send packet
-    LoRa.beginPacket();
+//    LoRa.beginPacket();
   // LoRa APRS Header:
-    LoRa.write('<');
-    LoRa.write(0xFF);
-    LoRa.write(0x01);
+    lorabuf[0]='<';
+    lorabuf[1]=0xFF;
+    lorabuf[2]=0x01;
+    lorabuf[3]=0;
   // APRS Data:
-    LoRa.print(CALLSIGN); // callsign
-    LoRa.print("-");  // SSID delimiter
-    LoRa.print(SSID);  // SSID specified icon
-    LoRa.print(">APZ666,WIDE1-1:!");  // software version APZ666 = experimental, APRS data type identifier = ! = Position without timestamp
+    strcat(lorabuf, CALLSIGN); // callsign
+    strcat(lorabuf, "-");  // SSID delimiter
+    strcat(lorabuf, SSID);  // SSID specified icon
+    strcat(lorabuf, ">APZ666,WIDE1-1:!");  // software version APZ666 = experimental, APRS data type identifier = ! = Position without timestamp
 // clear text
 //    LoRa.print(createaprscoords(lat, lon)); // from gps data, using primary symbol table
 //    LoRa.write(SYMBOLCODE); // symbol code
 //    if(alt!=NULL) LoRa.print(createaprsalt(alt)); // altitude only when available
 
 //compressed
-    LoRa.print(createcompressedaprscoords(lat, lon, alt, SYMBOLCODE)); // from gps data, using primary symbol table
+    strcat(lorabuf, createcompressedaprscoords(lat, lon, alt, SYMBOLCODE)); // from gps data, using primary symbol table
 
-    if(count==0) LoRa.print("LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
+    if(count==0) strcat(lorabuf, "LoRa Arduino MKR WAN 1300"); // send comment every 10 messages
 
 #ifdef ARDUINO_ARCH_RP2040
     if(count==5)
     {
-      LoRa.print(" B=");
+      strcat(lorabuf, " B=");
       float bat_voltage=analogRead(A0)/1024*3.0*3.0;
-      LoRa.print(bat_voltage);
-      LoRa.print(" T=");
-      LoRa.print(analogReadTemp(3.0));
+//      LoRa.print(bat_voltage);
+      strcat(lorabuf, " T=");
+//      LoRa.print(analogReadTemp(3.0));
     }
 #endif
 
-    LoRa.endPacket();
+    LoRa.Send((uint8_t *)lorabuf, sizeof(lorabuf),false);
 
-    LoRa.sleep(); // send LoRa Module to sleep mode
+    LoRa.Sleep(true); // send LoRa Module to sleep mode
 
     digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
     count++;  // counter for comment
